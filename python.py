@@ -3,13 +3,16 @@ import numpy
 import math
 from fractions import Fraction
 
-ventana = tkinter.Tk()
-ventana.geometry("800x800")
+ventana = tkinter.Tk() #ventana
+ventana.geometry("800x600") #limites de la pantalla
+ventana.title("Resolver matrices 3x3 - Método de eliminación de Gauss Jordan")
+ventana.option_add("*Button.Background", "#ff100c")
+ventana.option_add("*Button.Foreground", "#FFFFFF")
 
-etiquetabase = tkinter.Label(ventana,text="Resolver matrices 3x3 metodo eliminacion", font="roboto 12")
-etiquetabase.pack()
+etiquetabase = tkinter.Label(ventana,text="Resolver Matrices 3x3 - Método eliminación de Gauss Jordan", font="Helvetica 12") #titulo
+etiquetabase.pack(pady=20)
 
-frame = tkinter.Frame(ventana)
+frame = tkinter.Frame(ventana) #parte de la ventana
 frame.pack()
 
 val = [[None for _ in range(4)] for _ in range(3)]
@@ -17,36 +20,47 @@ valor = [[None for _ in range(4)] for _ in range(3)]
 
 for i in range(3):
     for j in range(4):
-        val[i][j] = tkinter.Entry(frame)
-        val[i][j].grid(row=i, column=j*2, padx=5, pady=5)
+        val[i][j] = tkinter.Entry(frame, font="Helvetica 12", width=10, justify="center", relief="solid", bd=1)
+        val[i][j].grid(row=i, column=j*2, padx=5, pady=5) #matriz que se muestra en pantalla
         
         if j == 3:
             igual = tkinter.Label(frame, text="=")
             igual.grid(row=i, column= (j*2-1))  
 
-boton = tkinter.Button(ventana, text= "resolver", command=lambda: resolver())
-boton.pack(padx=20,pady=20)
+frame2 = tkinter.Frame(ventana)
+frame2.pack(pady=10)
 
+boton = tkinter.Button(frame2, text= "Resolver", command=lambda: resolver()) #boton resolver
+boton.pack(padx=20,side=tkinter.LEFT)
 
-texto = tkinter.Text(ventana, height=10, width=50, bg="#ffffff", font=("Arial", 12))
-texto.pack()
+boton2 = tkinter.Button(frame2, text= "Limpiar", command=lambda: limpiar()) #boton limpiar
+boton2.pack(padx=20,side=tkinter.LEFT)
+
+texto = tkinter.Text(ventana, height=10, width=47, bg="#ffffff", font=("Helvetica 12"), relief="solid",bd=1) #caja de texto
+texto.pack(pady=10)
 
 def mejorar(matriz):
     texto = ""
     
     for i in matriz:
-        texto += " ".join([f"{elem: 8.4f}".rjust(10) for elem in i[:-1]]) + " = " + f"{i[-1]: 8.4f}".rjust(10) + "\n"
+        texto += " ".join([f"{elem: 8.4f}".rjust(10) for elem in i[:-1]]) + " = " + f"{i[-1]: 8.4f}".rjust(10) + "\n" #mostrar en caja de texto
     return texto
 
+def limpiar():
+    texto.delete(1.0,tkinter.END) #vacia la caja de texto
+    for i in range(3):
+        for j in range(4):
+            val[i][j].delete(0,tkinter.END) #vacia las cuadriculas
+
 def cambio(matriz, f1, f2):
-    matriz[[f1,f2]] = matriz[[f2,f1]]
+    matriz[[f1,f2]] = matriz[[f2,f1]] #cambio de filas
 
 def resolver():
     
     error = False
-    matriz = numpy.zeros((3,4))
+    matriz = numpy.zeros((3,4)) #matriz de ceros
     
-    for i in range(3):
+    for i in range(3): #obtener valores de la matriz de manera float y solo numeros
         for j in range(4):
             valor[i][j] = val[i][j].get()
             try:
@@ -54,92 +68,112 @@ def resolver():
                     matriz[i][j] = math.e
                 elif valor[i][j].strip() == "pi":
                     matriz[i][j] = math.pi
-                elif valor[i][j] == "":
+                elif valor[i][j].strip() == "":
                     matriz[i][j] = 0
-                elif "/" in valor[i][j]:                
-                    matriz[i][j] = float(Fraction(valor[i][j]))
+                elif "/" in valor[i][j].strip():                
+                    matriz[i][j] = float(Fraction(valor[i][j].strip()))
                 else:
-                    matriz[i][j] = float(valor[i][j])
+                    matriz[i][j] = float(valor[i][j].strip())
             except ValueError:
                 error = True
                 
     if error is False:
-        texto.delete(1.0,tkinter.END)
+        texto.delete(1.0,tkinter.END) #borrar al inicio siempre
         
-        A = matriz[:, :-1]
-        b = matriz[:, -1]
-        matrices = numpy.hstack((A, b.reshape(-1, 1)))
+        A = matriz[:, :-1] #matriz que tiene todas las filas y todas las columnas menos la ultima
+        b = matriz[:, -1] #matriz que tiene todas las filas y solo la ultima columna
+        matrices = numpy.hstack((A, b.reshape(-1, 1))) #toma a b como 3x1, luego junta A y b para 3x4
 
-        rango = numpy.linalg.matrix_rank(A)
-        rangoma = numpy.linalg.matrix_rank(matrices)
+        rango = numpy.linalg.matrix_rank(A) #calcula el rango de la matriz A
+        rangoma = numpy.linalg.matrix_rank(matrices) #calcula el rango de la matriz completa
         
-        if rango == rangoma == A.shape[1]:
-            texto.insert(tkinter.END,"solo 1 solucion \n")
+        if rango == rangoma == A.shape[1]: #rango A = rango entero = cantidad de columnas de A
+            texto.insert(tkinter.END,"Solo 1 solución\n")
         elif rango == rangoma < A.shape[1]:
-            texto.insert(tkinter.END,"infinitas soluciones \n")
+            texto.insert(tkinter.END,"Infinitas soluciones\n")
         else:
-            texto.insert(tkinter.END,"no tiene solución \n")
+            texto.insert(tkinter.END,"No tiene solución\n")
+        
+        if numpy.all(matriz == 0):
+            texto.insert(tkinter.END,"todo los valores son cero (0) \n")
+            return
         
         if matriz[0][0] == 0:
             if matriz[1][0] != 0:
                 cambio(matriz, 0, 1)
-                texto.insert(tkinter.END,f"se intercambió la primera fila por la segunda \n {mejorar(matriz)} \n")
+                texto.insert(tkinter.END,f"Se intercambió la primera fila por la segunda\n {mejorar(matriz)} \n")
             elif matriz[2][0] != 0:
                 cambio(matriz, 0, 2)
-                texto.insert(tkinter.END,f"se intercambió la primera fila por la segunda \n {mejorar(matriz)} \n")
+                texto.insert(tkinter.END,f"Se intercambió la primera fila por la segunda\n {mejorar(matriz)} \n")
             elif numpy.all(matriz[:,0] == 0):
-                texto.insert(tkinter.END,"todos los valores de la primer columna son cero (0) \n")
+                texto.insert(tkinter.END,"Todos los valores de la primer columna son cero (0)\n")
                 return
             
         retornado = matriz[0][0]
         for i in range(4):
             matriz[0][i] = matriz[0][i]/retornado
-        texto.insert(tkinter.END,f"fila 1 = fila 1 / {round(retornado,4)} \n {mejorar(matriz)} \n")
+        texto.insert(tkinter.END,f"Fila 1 = Fila 1 / {round(retornado,4)} \n {mejorar(matriz)} \n")
         
-        retornado2 = round(matriz[1][0], 4)
+        retornado2 = matriz[1][0]
         for i in range(4):
             matriz[1][i] = matriz[1][i] - (retornado2*matriz[0][i])
-        texto.insert(tkinter.END,f"fila 2 = fila 2 - {round(retornado2,4)} * fila 1 \n {mejorar(matriz)} \n")
+        texto.insert(tkinter.END,f"Fila 2 = Fila 2 - {round(retornado2,4)} * fila 1 \n {mejorar(matriz)} \n")
         
-        retornado3 = round(matriz[2][0], 4)
+        retornado3 = matriz[2][0]
         for i in range(4):
             matriz[2][i] = matriz[2][i] - (matriz[0][i]*retornado3)
-        texto.insert(tkinter.END,f"fila 3 = fila 3 - {round(retornado3,4)} * fila 1\n {mejorar(matriz)} \n")
+        texto.insert(tkinter.END,f"Fila 3 = Fila 3 - {round(retornado3,4)} * fila 1\n {mejorar(matriz)} \n")
         
         if matriz[1][1] == 0:
             if matriz[2][1] != 0:
                 cambio(matriz, 1, 2)
-                texto.insert(tkinter.END,f"se intercambió la segunda fila por la tercera \n {mejorar(matriz)} \n")
-            elif numpy.all(matriz[:,1] == 0):
-                texto.insert(tkinter.END,"los valores de la segunda y tercera fila en la segunda columna son cero (0) \n")
+                texto.insert(tkinter.END,f"Se intercambió la segunda fila por la tercera \n {mejorar(matriz)} \n")
+            else:
+                texto.insert(tkinter.END,"Los valores de la segunda y tercera fila en la segunda columna son cero (0) \n")
                 return
 
         retornado4 = matriz[1][1]
         for i in range(4):
             matriz[1][i] = matriz[1][i]/retornado4
-        texto.insert(tkinter.END,f" fila 2 / {round(retornado4,4)} \n {mejorar(matriz)} \n")
+        texto.insert(tkinter.END,f"Fila 2 / {round(retornado4,4)} \n {mejorar(matriz)} \n")
         
         retornado5 = matriz[2][1]
         for i in range(4):
             matriz[2][i] = matriz[2][i] - matriz[1][i]*retornado5
-        texto.insert(tkinter.END,f" fila 3 - {round(retornado5,4)} * fila 2 \n {mejorar(matriz)} \n")
+        texto.insert(tkinter.END,f"Fila 3 - {round(retornado5,4)} * fila 2 \n {mejorar(matriz)} \n")
         
         if matriz[2][2] == 0:
-            cambio(matriz, 1, 2)
-            texto.insert(tkinter.END,f"el valor de la ultima columna y fila es cero \n {mejorar(matriz)} \n")
+            texto.insert(tkinter.END,f"El valor de la ultima columna y fila es cero \n {mejorar(matriz)} \n")
             return
         
         retornado6 = matriz[2][2]
+        
         for i in range(4):
             matriz[2][i] = matriz[2][i]/retornado6
-        texto.insert(tkinter.END,f" fila 3 / {round(retornado6,4)} \n {mejorar(matriz)} \n")
+        texto.insert(tkinter.END,f"Fila 3 / {round(retornado6,4)} \n {mejorar(matriz)} \n")
+        
+        retornado7 = matriz[1][2]
+        
+        for i in range(4):
+            matriz[1][i] = matriz[1][i] - matriz[2][i] * retornado7
+        texto.insert(tkinter.END,f"Fila 2 = Fila 2 - Fila 3 * {round(retornado7,4)} \n {mejorar(matriz)} \n")
 
+        retornado8 = matriz[0][2]
         
+        for i in range(4):
+            matriz[0][i] = matriz[0][i] - matriz[2][i] * retornado8
+        texto.insert(tkinter.END,f"Fila 1 = Fila 1 - Fila3 * {round(retornado8,4)} \n {mejorar(matriz)} \n")
         
+        retornado9 = matriz[0][1]
+        
+        for i in range(4):
+            matriz[0][i] = matriz[0][i] - matriz[1][i] * retornado9
+        texto.insert(tkinter.END,f"Fila 1 = Fila 1 - Fila2 * {round(retornado9,4)} \n {mejorar(matriz)} \n")
+
+        texto.insert(tkinter.END,f"x = {round(matriz[0][3],4)} \ny = {round(matriz[1][3],4)} \nz = {round(matriz[2][3],4)} \n")
+
     else:
-        texto.insert(tkinter.END,"valor no válido en algun espacio \n")
-        
+        texto.delete(1.0, tkinter.END)
+        texto.insert(tkinter.END,"Valor no válido en algun espacio\n")
 
-
-    
 ventana.mainloop()
