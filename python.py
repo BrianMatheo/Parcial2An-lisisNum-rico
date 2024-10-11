@@ -36,7 +36,7 @@ boton.pack(padx=20,side=tkinter.LEFT)
 boton2 = tkinter.Button(frame2, text= "Limpiar", command=lambda: limpiar()) #boton limpiar
 boton2.pack(padx=20,side=tkinter.LEFT)
 
-texto = tkinter.Text(ventana, height=10, width=47, bg="#ffffff", font=("Helvetica 12"), relief="solid",bd=1) #caja de texto
+texto = tkinter.Text(ventana, height=10, width=48, bg="#ffffff", font=("Helvetica 12"), relief="solid",bd=1) #caja de texto
 texto.pack(pady=10)
 
 def mejorar(matriz):
@@ -80,20 +80,6 @@ def resolver():
     if error is False:
         texto.delete(1.0,tkinter.END) #borrar al inicio siempre
         
-        A = matriz[:, :-1] #matriz que tiene todas las filas y todas las columnas menos la ultima
-        b = matriz[:, -1] #matriz que tiene todas las filas y solo la ultima columna
-        matrices = numpy.hstack((A, b.reshape(-1, 1))) #toma a b como 3x1, luego junta A y b para 3x4
-
-        rango = numpy.linalg.matrix_rank(A) #calcula el rango de la matriz A
-        rangoma = numpy.linalg.matrix_rank(matrices) #calcula el rango de la matriz completa
-        
-        if rango == rangoma == A.shape[1]: #rango A = rango entero = cantidad de columnas de A
-            texto.insert(tkinter.END,"Solo 1 solución\n")
-        elif rango == rangoma < A.shape[1]:
-            texto.insert(tkinter.END,"Infinitas soluciones\n")
-        else:
-            texto.insert(tkinter.END,"No tiene solución\n")
-        
         if numpy.all(matriz == 0):
             texto.insert(tkinter.END,"todo los valores son cero (0) \n")
             return
@@ -104,8 +90,8 @@ def resolver():
                 texto.insert(tkinter.END,f"Se intercambió la primera fila por la segunda\n {mejorar(matriz)} \n")
             elif matriz[2][0] != 0:
                 cambio(matriz, 0, 2)
-                texto.insert(tkinter.END,f"Se intercambió la primera fila por la segunda\n {mejorar(matriz)} \n")
-            elif numpy.all(matriz[:,0] == 0):
+                texto.insert(tkinter.END,f"Se intercambió la primera fila por la tercera\n {mejorar(matriz)} \n")
+            else:
                 texto.insert(tkinter.END,"Todos los valores de la primer columna son cero (0)\n")
                 return
             
@@ -121,7 +107,7 @@ def resolver():
         
         retornado3 = matriz[2][0]
         for i in range(4):
-            matriz[2][i] = matriz[2][i] - (matriz[0][i]*retornado3)
+            matriz[2][i] = matriz[2][i] - (retornado3*matriz[0][i])
         texto.insert(tkinter.END,f"Fila 3 = Fila 3 - {round(retornado3,4)} * fila 1\n {mejorar(matriz)} \n")
         
         if matriz[1][1] == 0:
