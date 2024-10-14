@@ -40,7 +40,7 @@ texto = tkinter.Text(ventana, height=10, width=48, bg="#ffffff", font=("Helvetic
 texto.pack(pady=10)
 
 def mejorar(matriz):
-    texto = ""
+    texto = "        X                Y                Z\n"
     
     for i in matriz:
         texto += " ".join([f"{elem: 8.4f}".rjust(10) for elem in i[:-1]]) + " = " + f"{i[-1]: 8.4f}".rjust(10) + "\n" #mostrar en caja de texto
@@ -129,7 +129,7 @@ def resolver():
         texto.insert(tkinter.END,f"Fila 3 - {round(retornado5,4)} * fila 2 \n {mejorar(matriz)} \n")
         
         if matriz[2][2] == 0:
-            texto.insert(tkinter.END,f"El valor de la ultima columna y fila es cero \n {mejorar(matriz)} \n")
+            texto.insert(tkinter.END,f"El valor del último pivote es cero \n")
             return
         
         retornado6 = matriz[2][2]
