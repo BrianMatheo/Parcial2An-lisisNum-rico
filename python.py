@@ -9,8 +9,12 @@ ventana.title("Resolver matrices 3x3 - Método de eliminación de Gauss Jordan")
 ventana.option_add("*Button.Background", "#ff100c")
 ventana.option_add("*Button.Foreground", "#FFFFFF")
 
-etiquetabase = tkinter.Label(ventana,text="Resolver Matrices 3x3 - Método eliminación de Gauss Jordan", font="Helvetica 12") #titulo
+etiquetabase = tkinter.Label(ventana,text="Resolver Matrices 3x3 - Método eliminación de Gauss Jordan", font="Roboto 12") #titulo
 etiquetabase.pack(pady=20)
+
+
+etiquetabase = tkinter.Label(ventana,text="ㅤㅤㅤㅤXㅤㅤㅤㅤㅤㅤYㅤㅤㅤㅤㅤㅤZㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ", font="Roboto 12") #titulo
+etiquetabase.pack()
 
 frame = tkinter.Frame(ventana) #parte de la ventana
 frame.pack()
@@ -20,7 +24,8 @@ valor = [[None for _ in range(4)] for _ in range(3)]
 
 for i in range(3):
     for j in range(4):
-        val[i][j] = tkinter.Entry(frame, font="Helvetica 12", width=10, justify="center", relief="solid", bd=1)
+        
+        val[i][j] = tkinter.Entry(frame, font=("Consolas", 12), width=10, justify="center", relief="solid", bd=1)
         val[i][j].grid(row=i, column=j*2, padx=5, pady=5) #matriz que se muestra en pantalla
         
         if j == 3:
@@ -30,13 +35,16 @@ for i in range(3):
 frame2 = tkinter.Frame(ventana)
 frame2.pack(pady=10)
 
-boton = tkinter.Button(frame2, text= "Resolver", command=lambda: resolver()) #boton resolver
+boton = tkinter.Button(frame2, text= "Resolver", command=lambda: resolver(), font="Roboto 12") #boton resolver
 boton.pack(padx=20,side=tkinter.LEFT)
 
-boton2 = tkinter.Button(frame2, text= "Limpiar", command=lambda: limpiar()) #boton limpiar
+boton2 = tkinter.Button(frame2, text= "Limpiar", command=lambda: limpiar(), font="Roboto 12") #boton limpiar
 boton2.pack(padx=20,side=tkinter.LEFT)
 
-texto = tkinter.Text(ventana, height=10, width=48, bg="#ffffff", font=("Helvetica 12"), relief="solid",bd=1) #caja de texto
+boton3 = tkinter.Button(frame2, text= "Manual", command=lambda: manual(), font="Roboto 12")
+boton3.pack(padx=20,side=tkinter.LEFT)
+
+texto = tkinter.Text(ventana, height=10, width=48, bg="#ffffff", font=("Roboto 12"), relief="solid",bd=1) #caja de texto
 texto.pack(pady=10)
 
 def mejorar(matriz):
@@ -161,5 +169,19 @@ def resolver():
     else:
         texto.delete(1.0, tkinter.END)
         texto.insert(tkinter.END,"Valor no válido en algun espacio\n")
+
+def manual():
+    manual = tkinter.Toplevel(ventana)
+    manual.title("Manual de usuario")
+    
+    # Agregar un texto explicativo
+    mostrar = tkinter.Label(manual, text=(
+        "Botones:\n"
+        "'Resolver': Luego de haber ingresado los valores en la matriz\neste botón resuelve el sistema lineal por el método de\neliminacion de Gauss-Jordan\n"
+        "'Limpiar': Limpia todo en pantalla\n\n"
+        "Extras/valores aceptados:\n'pi','e',numeros enteros, fracciones y decimales\n"
+    ), justify="left")
+    mostrar.pack(pady=10, padx=10)
+
 
 ventana.mainloop()
