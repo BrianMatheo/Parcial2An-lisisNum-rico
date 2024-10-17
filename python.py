@@ -12,9 +12,8 @@ ventana.option_add("*Button.Foreground", "#FFFFFF")
 etiquetabase = tkinter.Label(ventana,text="Resolver Matrices 3x3 - Método eliminación de Gauss Jordan", font="Roboto 12") #titulo
 etiquetabase.pack(pady=20)
 
-
-etiquetabase = tkinter.Label(ventana,text="ㅤㅤㅤㅤXㅤㅤㅤㅤㅤㅤYㅤㅤㅤㅤㅤㅤZㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ", font="Roboto 12") #titulo
-etiquetabase.pack()
+variables = tkinter.Label(ventana,text="ㅤㅤㅤㅤXㅤㅤㅤㅤㅤㅤYㅤㅤㅤㅤㅤㅤZㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ", font="Roboto 12")
+variables.pack()
 
 frame = tkinter.Frame(ventana) #parte de la ventana
 frame.pack()
@@ -30,7 +29,7 @@ for i in range(3):
         
         if j == 3:
             igual = tkinter.Label(frame, text="=")
-            igual.grid(row=i, column= (j*2-1))  
+            igual.grid(row=i, column= (j*2-1))
 
 frame2 = tkinter.Frame(ventana)
 frame2.pack(pady=10)
@@ -89,7 +88,7 @@ def resolver():
         texto.delete(1.0,tkinter.END) #borrar al inicio siempre
         
         if numpy.all(matriz == 0):
-            texto.insert(tkinter.END,"todo los valores son cero (0) \n")
+            texto.insert(tkinter.END,"Todos los valores son cero (0) \n")
             return
         
         if matriz[0][0] == 0:
@@ -137,7 +136,7 @@ def resolver():
         texto.insert(tkinter.END,f"Fila 3 - {round(retornado5,4)} * fila 2 \n {mejorar(matriz)} \n")
         
         if matriz[2][2] == 0:
-            texto.insert(tkinter.END,f"El valor del último pivote es cero \n")
+            texto.insert(tkinter.END,f"El valor del último pivote es cero (0) \n")
             return
         
         retornado6 = matriz[2][2]
@@ -174,7 +173,6 @@ def manual():
     manual = tkinter.Toplevel(ventana)
     manual.title("Manual de usuario")
     
-    # Agregar un texto explicativo
     mostrar = tkinter.Label(manual, text=(
         "Botones:\n"
         "'Resolver': Luego de haber ingresado los valores en la matriz\neste botón resuelve el sistema lineal por el método de\neliminacion de Gauss-Jordan\n"
