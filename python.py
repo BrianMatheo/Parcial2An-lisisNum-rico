@@ -135,6 +135,12 @@ def resolver():
             matriz[2][i] = matriz[2][i] - matriz[1][i]*retornado5
         texto.insert(tkinter.END,f"Fila 3 - {round(retornado5,4)} * fila 2 \n {mejorar(matriz)} \n")
         
+        retornado9 = matriz[0][1]
+        
+        for i in range(4):
+            matriz[0][i] = matriz[0][i] - matriz[1][i] * retornado9
+        texto.insert(tkinter.END,f"Fila 1 = Fila 1 - Fila2 * {round(retornado9,4)} \n {mejorar(matriz)} \n")
+
         if matriz[2][2] == 0:
             texto.insert(tkinter.END,f"El valor del último pivote es cero (0) \n")
             return
@@ -157,12 +163,6 @@ def resolver():
             matriz[0][i] = matriz[0][i] - matriz[2][i] * retornado8
         texto.insert(tkinter.END,f"Fila 1 = Fila 1 - Fila3 * {round(retornado8,4)} \n {mejorar(matriz)} \n")
         
-        retornado9 = matriz[0][1]
-        
-        for i in range(4):
-            matriz[0][i] = matriz[0][i] - matriz[1][i] * retornado9
-        texto.insert(tkinter.END,f"Fila 1 = Fila 1 - Fila2 * {round(retornado9,4)} \n {mejorar(matriz)} \n")
-
         texto.insert(tkinter.END,f"x = {round(matriz[0][3],4)} \ny = {round(matriz[1][3],4)} \nz = {round(matriz[2][3],4)} \n")
 
     else:
